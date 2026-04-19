@@ -1,112 +1,170 @@
-﻿# Demo Video Ready (April 19, 2026)
+﻿# Demo Video Ready - Winning Version (April 19, 2026)
 
-## Final verified platform state
+## 0) What judges should feel in 10 seconds
 
-- Actian image: `williamimoh/actian-vectorai-db:latest`
-- Containers:
-  - `vectorai-db` -> `50051`
-  - `api` -> `8000`
-  - `pwa` -> `5173`
-- Indexed real local data:
+"This solves a real pain, works live, and is technically strong on Actian VectorAI DB."
+
+Your video must prove three things clearly:
+
+- Real problem with real user pain
+- Real product running live
+- Real Actian VectorAI DB usage with measurable retrieval quality
+
+## 1) Recording setup (main screen only)
+
+- Record only your primary monitor.
+- Close private apps/tabs before recording.
+- Keep one browser window + one terminal window.
+- Keep text readable at 100% to 110% zoom.
+- Use your natural voice, slightly slower than normal speaking.
+
+## 2) 4-minute winning script (exact words + actions)
+
+### 0:00-0:25 - Problem (pain first)
+
+Say:
+
+"Today our files are scattered across photos, PDFs, notes, and voice memos. Keyword search breaks because we forget exact names. In real life, people remember meaning, not filenames."
+
+Show:
+
+- Open PWA home page
+- Search bar + offline badge visible
+
+### 0:25-0:45 - Why existing search fails
+
+Say:
+
+"Traditional search only matches words. If I type a natural description, it usually misses the right file. That is the gap we solved."
+
+Show:
+
+- Quick example query in PWA
+- Briefly show mixed file types in results area
+
+### 0:45-1:15 - Solution and architecture
+
+Say:
+
+"We built Flamki Vector Search, a local-first multimodal search system powered by Actian VectorAI DB. We index text, images, and audio transcripts, then fuse lexical and semantic retrieval for robust results."
+
+Show:
+
+- Terminal: `docker compose ps`
+- Highlight `vectorai-db` container
+
+### 1:15-1:40 - Proof of data scale
+
+Say:
+
+"This is not toy data. We indexed a large real dataset from the local machine for submission-grade evaluation."
+
+Show:
+
+- `http://localhost:8000/api/index/status`
+- Keep these numbers visible:
   - `files_total=2781`
   - `text_vectors=38374`
   - `image_vectors=1923`
-- Endpoints validated live:
-  - `GET /health`
-  - `GET /api/index/status`
-  - `GET /api/search`
-  - `POST /api/search/image`
 
-## Recording rules (important)
-
-- Record **only one main screen** (do not record full multi-monitor desktop).
-- Use your **natural human voice** (no AI voiceover).
-- Keep total video near **4 minutes**.
-- Keep narration focused on problem -> solution -> proof.
-
-## 4-minute on-camera script (time-boxed)
-
-### 0:00 - 0:30 Problem statement
+### 1:40-2:20 - Text search demo (hybrid + filters)
 
 Say:
 
-"People keep thousands of local files and cannot find anything later. Keyword search fails for photos, PDFs, and voice notes. We built a local-first second brain that searches by meaning, not just filename."
+"Now I run a semantic document query. Results are fused from lexical and vector signals, and filters keep retrieval controllable."
 
 Show:
 
-- PWA home screen
-- search bar + offline badge visible
+- Query: `hackathon battle plan`
+- Apply a filter chip (`pdf` or `txt`)
+- Open one strong result snippet
 
-### 0:30 - 1:00 Actian proof + architecture
+### 2:20-2:55 - Image similarity demo (wow moment)
 
 Say:
 
-"Our retrieval backend uses Actian VectorAI DB in Docker, with separate vector collections for text and images, plus hybrid fusion and filters."
+"Now image-to-image retrieval. I upload one image, and the system returns visually similar local images immediately."
 
 Show:
 
-- `docker compose ps` with `vectorai-db`
-- `/api/index/status` with vector counts
+- Use `/api/search/image` flow
+- Show top 5 matched image results
 
-### 1:00 - 1:45 Text/doc search demo
+### 2:55-3:25 - Audio/voice-note demo
 
 Say:
 
-"Now I search docs semantically with hybrid lexical + vector fusion."
+"Voice notes are transcribed and searchable as text, so spoken content becomes discoverable."
 
 Show:
 
-- query: `hackathon battle plan`
-- results list with file paths and snippets
-- apply filter chip (`pdf` or `txt`)
+- Query: `be decent in my eyes`
+- Filter: `mp3`
+- Show returned audio chunks
 
-### 1:45 - 2:30 Image search demo (key wow moment)
+### 3:25-3:45 - Why this is technically strong
 
 Say:
 
-"Now image-to-image retrieval: upload one photo and get similar photos instantly from local indexed data."
+"Our implementation uses Actian VectorAI DB with named vectors, hybrid fusion using RRF, and filtered search. This is an end-to-end production-style retrieval pipeline, not a mock."
 
 Show:
 
-- upload one photo in UI or call `POST /api/search/image`
-- top image matches returned
+- `vectorai/client.py`
+- `Stage_3/tools/tool_hybrid_search.py`
 
-### 2:30 - 3:10 Audio/voice note search demo
+### 3:45-4:00 - Strong close
 
 Say:
 
-"Voice notes are transcribed and searchable like text."
+"Flamki Vector Search turns messy local files into searchable knowledge by meaning. It is local-first, multimodal, and fully powered by Actian VectorAI DB."
 
 Show:
 
-- query: `be decent in my eyes`
-- filter `mp3`
-- returned audio chunks
+- Final clean result screen
 
-### 3:10 - 3:45 Why this is technically strong
+## 3) Voice delivery guide (human, confident)
 
-Say:
+- Pace: 135 to 150 words per minute
+- Tone: calm, practical, confident
+- Pause 0.5 seconds after every key claim
+- Stress these words: "local-first", "Actian VectorAI DB", "real data", "hybrid fusion", "multimodal"
+- Avoid sounding memorized: keep sentence endings natural, not robotic
 
-"This solution is fully local-first, uses Actian VectorAI DB as the core vector engine, supports named vectors, hybrid fusion, and filtered retrieval across modalities."
+## 4) If something fails live (safe fallback lines)
 
-Show:
+If image upload is slow:
 
-- endpoint checks passing (`python scripts/check_endpoints.py`)
-- brief code glimpse: `vectorai/client.py` and `Stage_3/tools/tool_hybrid_search.py`
+"The image endpoint is live; to save time I will continue with text and audio proof."
 
-### 3:45 - 4:00 Close
+If one query is weak:
 
-Say:
+"Let me run a second query from the same indexed set."
 
-"This is production-style multimodal retrieval with real local data at submission scale, running end-to-end in Docker."
+If UI lags:
 
-Show:
+"Backend is still running live; I will validate directly on the API endpoint."
 
-- final UI result screen (clean)
+## 5) Final pre-record checklist
 
-## Safety checklist before recording
+Run these before pressing Record:
 
-- Run `python scripts/check_endpoints.py` and confirm all pass.
-- Keep browser zoom readable (100% or 110%).
-- Close unrelated apps/tabs with sensitive content.
-- Test microphone once before final take.
+```bash
+python scripts/check_endpoints.py
+```
+
+Expected: "All endpoint checks passed."
+
+Then confirm:
+
+- `docker compose ps` shows all 3 services up
+- PWA is open on one main screen only
+- microphone level is clear (no clipping)
+
+## 6) Submission-safe claims you can make
+
+- "Organizer-confirmed Actian image in Docker Compose"
+- "Named vectors for text and image collections"
+- "Hybrid fusion (RRF) implemented"
+- "Filtered search available (`file_type`, `after_date`)"
+- "Live endpoints validated on local stack"

@@ -1,0 +1,34 @@
+﻿FLAMKI VECTOR SEARCH - TELEPROMPTER (4 MIN)
+
+People today keep files across photos, PDFs, notes, and voice memos.
+Keyword search fails because we forget exact names.
+In real life, we remember meaning, not filenames.
+
+Traditional search only matches words.
+If I type a natural description, it misses relevant files.
+That is the exact gap we solved.
+
+We built Flamki Vector Search, a local-first multimodal search system powered by Actian VectorAI DB.
+We index text, images, and audio transcripts.
+Then we fuse lexical and semantic retrieval for stronger results.
+
+This is not toy data.
+We indexed a large real local dataset for submission-grade evaluation.
+
+Now I run a semantic document query.
+Results are fused from lexical and vector signals.
+And filters keep retrieval controllable.
+
+Next, image-to-image retrieval.
+I upload one image, and the system returns visually similar local images.
+
+Now audio search.
+Voice notes are transcribed and searchable as text.
+Spoken content becomes discoverable.
+
+Technically, this project uses Actian VectorAI DB with named vectors,
+hybrid fusion with RRF, and filtered search.
+This is an end-to-end production-style retrieval pipeline, not a mock.
+
+Flamki Vector Search turns messy local files into searchable knowledge by meaning.
+It is local-first, multimodal, and fully powered by Actian VectorAI DB.

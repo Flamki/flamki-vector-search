@@ -78,6 +78,9 @@ python scripts/check_endpoints.py
 ## Demo recording guides
 
 - Main script + timing: `DEMO_VIDEO_READY.md`
+- Teleprompter text: `DEMO_TELEPROMPTER.txt`
+- One-command preflight: `scripts/demo_preflight.ps1`
+- One-command 4-minute recording: `scripts/demo_take_4min.ps1`
 - Full technical handoff: `PROJECT_HANDOFF_REPORT.md`
 
 ## Notes
