@@ -90,3 +90,9 @@ Owner: Flamki
 - Add OCR pre-processing for scanned PDFs/images in Linux path.
 - Record final 4-minute walkthrough video and attach repository link in submission.
 
+## 11) Publication details
+
+- Public repository: `https://github.com/Flamki/flamki-vector-search`
+- Default branch: `main`
+- Release commit: `85fd533`
+
