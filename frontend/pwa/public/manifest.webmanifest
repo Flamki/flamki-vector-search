@@ -1,0 +1,10 @@
+{
+  "name": "Flamki Vector Search - Offline Multimodal Search",
+  "short_name": "Flamki Vector Search",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": []
+}
+

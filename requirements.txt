@@ -1,0 +1,51 @@
+# GUI
+flet
+
+# LLM / AI services
+openai
+lmstudio
+
+# Embeddings
+sentence-transformers
+numpy
+
+# Speech transcription
+faster-whisper
+torch
+
+# Image processing
+Pillow
+pillow-heif
+
+# Document parsing
+PyMuPDF
+python-docx
+python-pptx
+pandas
+
+# Archive parsing
+py7zr
+rarfile
+
+# HTTP
+requests
+
+# API
+fastapi
+uvicorn
+python-multipart
+https://github.com/hackmamba-io/actian-vectorAI-db-beta/raw/main/actian_vectorai-0.1.0b2-py3-none-any.whl
+
+# Telegram bot
+python-telegram-bot
+
+# Google Drive
+google-auth
+google-auth-oauthlib
+google-api-python-client
+
+# Windows OCR (Windows only)
+winsdk; sys_platform == "win32"
+
+# Syncing
+watchdog

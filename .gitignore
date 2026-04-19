@@ -1,0 +1,17 @@
+__pycache__/
+*.tmp
+config.json
+database.db*
+.VSCodeCounter
+.claude
+.DS_Store
+.git
+.vscode
+.env
+node_modules/
+dist/
+
+# keep real local demo assets private when publishing
+demo_data/**
+!demo_data/.gitkeep
+!demo_data/README.md

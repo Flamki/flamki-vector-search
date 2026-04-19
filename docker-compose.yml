@@ -1,0 +1,40 @@
+services:
+  vectorai-db:
+    image: williamimoh/actian-vectorai-db:latest
+    container_name: vectorai-db
+    restart: unless-stopped
+    ports:
+      - "50051:50051"
+    volumes:
+      - vectorai_data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      VECTORAI_HOST: vectorai-db
+      VECTORAI_PORT: 50051
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      vectorai-db:
+        condition: service_started
+    volumes:
+      - ./demo_data:/app/demo_data
+
+  pwa:
+    build:
+      context: .
+      dockerfile: frontend/pwa/Dockerfile
+      args:
+        VITE_API_BASE: http://localhost:8000/api
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  vectorai_data:

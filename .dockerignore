@@ -1,0 +1,15 @@
+.git
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+frontend/pwa/node_modules/
+frontend/pwa/dist/
+node_modules/
+dist/
+*.log
