@@ -1,30 +1,23 @@
-# Flamki Vector Search
+﻿# Flamki Vector Search
 
-Flamki Vector Search is a local-first multimodal search platform built for the Actian VectorAI DB hackathon. It indexes documents, notes, images, and voice notes, then serves hybrid retrieval through a FastAPI backend and React PWA frontend.
+Flamki Vector Search is a local-first multimodal search system built on **Actian VectorAI DB** for hackathon submission. It indexes documents, notes, images, and voice/audio files and serves hybrid retrieval through FastAPI + React PWA.
 
-## Project ownership
+## Judge criteria coverage
 
-- Maintainer: **Flamki**
-- GitHub owner: `Flamki`
-- Public-facing project name: **Flamki Vector Search**
+- **Actian VectorAI DB image**: `williamimoh/actian-vectorai-db:latest` (organizer-confirmed)
+- **Named vectors**: separate collections for text and image vectors
+- **Hybrid fusion (RRF)**: lexical + semantic merged in `Stage_3/tools/tool_hybrid_search.py`
+- **Filtered search**: `file_type`, `after_date`
 
-## Hackathon criteria coverage
+## What is shipped
 
-- **Actian VectorAI DB usage**: `williamimoh/actian-vectorai-db:latest` (confirmed by organizer for judging)
-- **Named vectors**: separate collections for `text_vectors` and `image_vectors_l14_768`
-- **Hybrid fusion (RRF)**: lexical BM25 + semantic vectors fused in `Stage_3/tools/tool_hybrid_search.py`
-- **Filtered search**: `file_type` and `after_date` filters supported across search paths
-
-## What is implemented
-
-- VectorAI integration module with collection lifecycle + upsert/search
-- Stage-2 ingestion pipeline with audio transcription task (`task_transcribe_audio.py`)
+- VectorAI client module with collection lifecycle + upsert/search
 - FastAPI endpoints:
   - `GET /health`
   - `GET /api/index/status`
   - `GET /api/search`
   - `POST /api/search/image`
-- React PWA:
+- React PWA with:
   - offline badge
   - search bar
   - filter chips
@@ -34,64 +27,64 @@ Flamki Vector Search is a local-first multimodal search platform built for the A
   - `api` on `8000`
   - `pwa` on `5173`
 
+## Latest verified run (April 19, 2026)
+
+- `files_total=2781`
+- Modalities:
+  - `text=1045`
+  - `image=1600`
+  - `audio=80`
+  - `tabular=56`
+- VectorAI counts:
+  - `text_vectors=38374`
+  - `image_vectors=1923`
+- Endpoint checks: passing (`health`, `status`, text search, image search POST, audio query)
+
 ## Quick start
 
 ```bash
 docker compose up -d
 ```
 
-API docs: `http://localhost:8000/docs`  
-PWA: `http://localhost:5173`
+- API docs: `http://localhost:8000/docs`
+- PWA: `http://localhost:5173`
 
-## Demo data ingestion
+## Ingest large real local data
 
-1. Put your local files in these folders:
-   - `demo_data/docs`
-   - `demo_data/notes`
-   - `demo_data/photos`
-   - `demo_data/audio`
-2. Run ingest:
+1. Pull real files from your laptop folders into `demo_data/*`:
 
 ```bash
-docker compose exec api python scripts/run_demo_ingest.py
+python scripts/collect_large_demo_data.py --docs 300 --notes 800 --photos 1600 --audio 80 --max-file-mb 80
 ```
 
-3. Re-run selective tasks after new files:
+2. Run ingestion:
 
 ```bash
-docker compose exec api sh -lc "RESET_TASKS=transcribe_audio,embed_images python scripts/run_demo_ingest.py"
+docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=10800 api python /app/scripts/run_demo_ingest.py
+```
+
+3. If semantic vectors need a fresh mirror, rerun embed tasks only:
+
+```bash
+docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=14400 -e RESET_TASKS=embed_text,embed_images api python /app/scripts/run_demo_ingest.py
 ```
 
 ## Endpoint smoke checks
 
 ```bash
-curl http://localhost:8000/health
-curl "http://localhost:8000/api/index/status"
-curl "http://localhost:8000/api/search?q=hackathon%20plan&top_k=5"
+python scripts/check_endpoints.py
 ```
 
-Image search test:
+## Demo recording guides
 
-```bash
-curl -X POST "http://localhost:8000/api/search/image?top_k=5" \
-  -F "file=@demo_data/photos/photo_001.png"
-```
+- Main script + timing: `DEMO_VIDEO_READY.md`
+- Full technical handoff: `PROJECT_HANDOFF_REPORT.md`
 
-## Demo notes
+## Notes
 
-- Linux containers may keep `ocr_images` pending because OCR service is Windows-native.
-- Text, image, and audio transcript search are fully demo-safe.
-- Keep demo queries focused on indexed files for consistent live results.
-
-## Key files
-
-- API: `api/`
-- PWA: `frontend/pwa/`
-- Ingestion orchestration: `Stage_2/orchestrator.py`
-- Audio transcription task: `Stage_2/tasks/task_transcribe_audio.py`
-- Search tools: `Stage_3/tools/`
-- VectorAI client layer: `vectorai/`
+- OCR task is pending in Linux containers because OCR service in this codebase is Windows-only.
+- `demo_data/**` is ignored in git by design (privacy-safe public repo publishing).
 
 ## License
 
-This repository contains hackathon implementation code and references third-party dependencies per their respective licenses.
+Hackathon implementation with third-party dependencies under their respective licenses.

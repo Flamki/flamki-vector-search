@@ -15,3 +15,6 @@ dist/
 demo_data/**
 !demo_data/.gitkeep
 !demo_data/README.md
+
+# local bulk-import bookkeeping
+scripts/.bulk_import_index.json

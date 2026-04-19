@@ -1,98 +1,131 @@
-# Flamki Vector Search - Handoff Report
+﻿# Flamki Vector Search - Full Handoff Report
 
 Date: April 19, 2026
-Owner: Flamki
+Project root: `C:\Users\bbook\Desktop\vector-ai\second-brain`
 
-## 1) Scope completed
+## 1) Objective completed
 
-- Integrated Actian-compatible VectorAI DB container in Docker Compose.
-- Implemented named-vector storage and retrieval paths for text and image embeddings.
-- Implemented hybrid retrieval (BM25 + semantic vectors) with Reciprocal Rank Fusion (RRF).
-- Added filtered search support (`file_type`, `after_date`) across API search flow.
-- Built and wired FastAPI endpoints for health, index status, text query search, and image query search.
-- Built React PWA frontend with offline indicator, filter chips, and results grid.
-- Added audio transcription pipeline task and ingestion integration.
-- Indexed real local demo assets and validated endpoint outputs with live vector results.
-- Rebranded user-facing project identity to **Flamki Vector Search**.
-- Prepared repo for public publishing with privacy-safe `.gitignore` behavior for `demo_data`.
+- Delivered an end-to-end multimodal local search project for hackathon judging.
+- Confirmed judge-compliant Actian image in Docker Compose.
+- Expanded and indexed large real local dataset from laptop folders.
+- Validated all required API endpoints with live vector-backed results.
+- Prepared demo recording script with timed narration and main-screen-only guidance.
 
-## 2) Final architecture
+## 2) Final stack
 
-- Storage/index layer: Actian VectorAI DB (`vectorai-db`, gRPC `50051`)
-- API layer: FastAPI (`api`, `8000`)
-- UI layer: React PWA (`pwa`, `5173`)
-- Ingestion engine: Stage-2 orchestrator + tasks
-- Search logic: Stage-3 lexical + semantic + hybrid fusion tools
+- Vector DB: Actian VectorAI DB (`williamimoh/actian-vectorai-db:latest`, gRPC `50051`)
+- API: FastAPI (`8000`)
+- Frontend: React PWA (`5173`)
+- Pipeline: Stage 2 ingestion/tasks
+- Search layer: lexical + semantic + RRF hybrid fusion
 
-## 3) Implemented endpoints
+## 3) Dataset scaling work done
+
+### Added script
+
+- `scripts/collect_large_demo_data.py`
+  - Collects real files from:
+    - Desktop
+    - Documents
+    - Downloads
+    - Pictures
+    - Music
+    - Videos
+  - Categorizes to `demo_data/{docs,notes,photos,audio}`
+  - Skips oversized/irrelevant folders
+  - Keeps dedupe index at `scripts/.bulk_import_index.json` (outside searchable data)
+
+### Final collected totals in `demo_data`
+
+- docs: `300`
+- notes: `800`
+- photos: `1600`
+- audio: `80`
+- total indexed files seen by API: `2781`
+
+## 4) Ingestion and indexing status
+
+Latest `/api/index/status`:
+
+- files_total: `2781`
+- files_by_modality:
+  - audio: `80`
+  - image: `1600`
+  - tabular: `56`
+  - text: `1045`
+- vectorai:
+  - available: `true`
+  - text_vectors: `38374`
+  - image_vectors: `1923`
+
+Task summary:
+
+- `extract_text`: DONE `1045`
+- `chunk_text`: DONE `1115`
+- `embed_text`: DONE `1115`
+- `embed_images`: DONE `1659`, FAILED `3`
+- `index_lexical`: DONE `1171`
+- `transcribe_audio`: DONE `70`, FAILED `10`
+- `textualize_tabular`: DONE `95`, FAILED `91`
+- `ocr_images`: PENDING `1662` (expected on Linux container; OCR service is Windows-only)
+
+## 5) Endpoint validation
+
+Passed checks:
 
 - `GET /health`
 - `GET /api/index/status`
-- `GET /api/search`
+- `GET /api/search` (text + filters)
 - `POST /api/search/image`
+- audio search via `GET /api/search?q=...&file_type=mp3`
 
-## 4) Pipeline additions and fixes
+Added automated smoke-check script:
 
-- Added task: `Stage_2/tasks/task_transcribe_audio.py`
-- Updated ingest launcher: `scripts/run_demo_ingest.py` to include transcription service/task path
-- Fixed dependency handling for shared output tables in `Stage_2/orchestrator.py`
-- Relaxed strict all-input requirement in `Stage_2/tasks/task_chunk_text.py` so audio-derived text can flow correctly
+- `scripts/check_endpoints.py`
 
-## 5) Verified operational status (latest validated run)
+Run with:
 
-- Files indexed: `151`
-- Modalities:
-  - Text docs/notes: `18`
-  - Images: `130`
-  - Audio: `3`
-- Task completion highlights:
-  - `transcribe_audio`: `DONE=3`
-  - `embed_images`: `DONE=133`
-  - `embed_text`: `DONE=21`
-  - `index_lexical`: `DONE=21`
-- Vector collections:
-  - `text_vectors=453`
-  - `image_vectors=133`
+```bash
+python scripts/check_endpoints.py
+```
 
-## 6) Demo readiness
+## 6) Key code/documentation changes
 
-- Actian image confirmation from organizer: approved image/tag in use (`williamimoh/actian-vectorai-db:latest`).
-- Demo query sequence documented in `DEMO_VIDEO_READY.md`.
-- OCR note documented: Linux container may leave OCR pending due Windows-native OCR service.
+- Added: `scripts/collect_large_demo_data.py`
+- Added: `scripts/check_endpoints.py`
+- Updated: `requirements.txt` (includes `openpyxl`)
+- Updated: `README.md` (latest architecture, data scale, commands)
+- Updated: `DEMO_VIDEO_READY.md` (4-minute script, one-main-screen recording plan)
+- Updated: `PROJECT_HANDOFF_REPORT.md` (this report)
 
-## 7) Branding/publication changes
+## 7) Known caveats (honest disclosure)
 
-- README rewritten under **Flamki Vector Search** branding.
-- API title, PWA title/manifest/package naming, and UI labels rebranded.
-- Runtime prompt identity and frontend status text rebranded.
-- Data directory naming and telemetry/user-agent text updated to project brand.
-- Configured repository for independent public publishing under Flamki ownership.
+- OCR remains pending in Linux container path because OCR service in this codebase is Windows-native.
+- Some tabular/audio files fail parsing/transcription due source format/quality; core demo paths remain healthy.
+- `demo_data/**` stays git-ignored to avoid committing private personal files.
 
-## 8) Privacy and repo hygiene
+## 8) Recommended demo flow
 
-- Added ignore rules to prevent committing personal files in `demo_data/**`.
-- Added `demo_data/README.md` with ingestion instructions.
-- Kept project reproducible without bundling private personal assets.
+1. Show `/api/index/status` with counts.
+2. Run text query: `hackathon battle plan`.
+3. Run image similarity (`POST /api/search/image`) with a local photo.
+4. Run audio query with `file_type=mp3`.
+5. End with architecture summary (Actian + named vectors + hybrid + filters).
 
-## 9) Reproduce from scratch
+## 9) Commands used (reference)
 
-1. `docker compose up -d`
-2. Add local files into `demo_data/docs`, `demo_data/notes`, `demo_data/photos`, `demo_data/audio`
-3. `docker compose exec api python scripts/run_demo_ingest.py`
-4. Validate:
-   - `curl http://localhost:8000/health`
-   - `curl "http://localhost:8000/api/index/status"`
-   - `curl "http://localhost:8000/api/search?q=photo%20of%20person&top_k=5"`
+```bash
+python scripts/collect_large_demo_data.py --docs 300 --notes 800 --photos 1600 --audio 80 --max-file-mb 80
 
-## 10) Remaining optional improvements
+docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=10800 api python /app/scripts/run_demo_ingest.py
 
-- Add more photo diversity for stronger semantic image demos.
-- Add OCR pre-processing for scanned PDFs/images in Linux path.
-- Record final 4-minute walkthrough video and attach repository link in submission.
+docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=14400 -e RESET_TASKS=embed_text,embed_images api python /app/scripts/run_demo_ingest.py
 
-## 11) Publication details
+python scripts/check_endpoints.py
+```
 
-- Public repository: `https://github.com/Flamki/flamki-vector-search`
-- Default branch: `main`
-- Release commit: `85fd533`
+## 10) What remains for final submission
 
+- Record the final 4-minute demo video (main screen only, natural human voice).
+- Push latest docs/scripts to public GitHub.
+- Submit repo + video to hackathon portal.
