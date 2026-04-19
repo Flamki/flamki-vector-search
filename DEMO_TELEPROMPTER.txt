@@ -1,34 +1,73 @@
-﻿FLAMKI VECTOR SEARCH - TELEPROMPTER (4 MIN)
+﻿FLAMKI VECTOR SEARCH - WINNING TELEPROMPTER (4 MIN)
 
-People today keep files across photos, PDFs, notes, and voice memos.
-Keyword search fails because we forget exact names.
-In real life, we remember meaning, not filenames.
+Today, our biggest productivity problem is not creating information. It is finding information later.
+Students, developers, and working professionals store files across photos, PDFs, notes, screenshots, and voice memos.
+After a few weeks, everything becomes digital clutter.
+When we need something urgent, normal keyword search fails because we do not remember exact file names.
+We remember meaning. We remember intent. We remember context.
+And that is exactly the problem this project solves.
 
-Traditional search only matches words.
-If I type a natural description, it misses relevant files.
-That is the exact gap we solved.
+Traditional search is string matching.
+If the file does not contain the exact words, we miss it.
+This is especially painful for images and audio.
+A photo does not have useful keywords by default.
+A voice note is not searchable until it is transcribed.
+So even valuable information becomes invisible.
 
-We built Flamki Vector Search, a local-first multimodal search system powered by Actian VectorAI DB.
-We index text, images, and audio transcripts.
-Then we fuse lexical and semantic retrieval for stronger results.
+Our solution is Flamki Vector Search.
+It is a local-first, multimodal search system powered by Actian VectorAI DB.
+Local-first means your files stay on your machine.
+No cloud dependency.
+No external storage requirement.
+And it still supports semantic retrieval at scale.
 
-This is not toy data.
-We indexed a large real local dataset for submission-grade evaluation.
+Let me quickly show architecture.
+We run three containers in Docker.
+First is Actian VectorAI DB for vector storage and nearest-neighbor search.
+Second is FastAPI for ingestion and search endpoints.
+Third is a React PWA for a clean user experience with offline capability.
+So this is not a notebook demo.
+This is an end-to-end product pipeline.
 
-Now I run a semantic document query.
-Results are fused from lexical and vector signals.
-And filters keep retrieval controllable.
+Now let us verify real scale.
+We indexed a large local dataset from this machine.
+The current run contains thousands of files across text, images, tabular documents, and audio.
+On top of that, we have tens of thousands of text vectors and nearly two thousand image vectors.
+This matters because judges want production realism, not a toy dataset.
 
-Next, image-to-image retrieval.
-I upload one image, and the system returns visually similar local images.
+Now I run a text query.
+Notice results are not only lexical matches.
+We combine lexical relevance and vector similarity using hybrid fusion.
+That makes retrieval more robust when user phrasing differs from document phrasing.
+Then we add filters like file type and date to improve precision and control.
+This gives both semantic flexibility and practical usability.
+
+Next, image retrieval.
+I upload one local image and search for visually similar images.
+This demonstrates that retrieval is truly multimodal.
+It is not just text embeddings.
+We maintain dedicated image vectors and return high-confidence visual matches from local indexed data.
+For many users, this is one of the biggest real-world wins because photos are usually the hardest files to organize.
 
 Now audio search.
-Voice notes are transcribed and searchable as text.
-Spoken content becomes discoverable.
+Voice notes are transcribed during ingestion, embedded, and searchable as text.
+So spoken thoughts become discoverable knowledge.
+This closes an important gap because many people save ideas as audio, then never find them again.
+With this pipeline, those notes become searchable in the same interface.
 
-Technically, this project uses Actian VectorAI DB with named vectors,
-hybrid fusion with RRF, and filtered search.
-This is an end-to-end production-style retrieval pipeline, not a mock.
+Technically, this project satisfies the core judging requirements.
+We use the organizer-confirmed Actian VectorAI DB image.
+We use named vectors for text and image modalities.
+We implement hybrid fusion with Reciprocal Rank Fusion.
+We support filtered search.
+And we expose clear API endpoints for health, index status, text search, and image search.
+All of this is running live right now.
 
-Flamki Vector Search turns messy local files into searchable knowledge by meaning.
-It is local-first, multimodal, and fully powered by Actian VectorAI DB.
+Let me close with impact.
+Flamki Vector Search turns scattered local files into searchable knowledge by meaning.
+It gives users a practical second brain that works across documents, photos, and voice notes.
+It is private, local-first, and built with real retrieval engineering principles.
+This is why it is not just a hackathon prototype.
+It is a strong foundation for a real product.
+
+Thank you.

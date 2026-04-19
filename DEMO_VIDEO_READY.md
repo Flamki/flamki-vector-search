@@ -168,3 +168,15 @@ Then confirm:
 - "Hybrid fusion (RRF) implemented"
 - "Filtered search available (`file_type`, `after_date`)"
 - "Live endpoints validated on local stack"
+
+## 7) Optional AI voiceover render
+
+If you want an ElevenLabs-rendered narration version:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/render_demo_with_voiceover.ps1
+```
+
+Output video:
+
+- `recordings/final_demo_with_voiceover.mp4`

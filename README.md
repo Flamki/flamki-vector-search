@@ -81,6 +81,8 @@ python scripts/check_endpoints.py
 - Teleprompter text: `DEMO_TELEPROMPTER.txt`
 - One-command preflight: `scripts/demo_preflight.ps1`
 - One-command 4-minute recording: `scripts/demo_take_4min.ps1`
+- ElevenLabs voiceover generator: `scripts/generate_elevenlabs_voiceover.py`
+- Auto demo render with voiceover: `scripts/render_demo_with_voiceover.ps1`
 - Full technical handoff: `PROJECT_HANDOFF_REPORT.md`
 
 ## Notes
