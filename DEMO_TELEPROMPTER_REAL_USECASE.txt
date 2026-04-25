@@ -1,0 +1,64 @@
+﻿FLAMKI VECTOR SEARCH - REAL USE CASE NARRATION
+
+This demo shows a real problem and a real solution.
+The problem is simple.
+People keep important information across documents, photos, and voice notes, but cannot retrieve it when it matters.
+Under deadline pressure, traditional keyword search fails because we forget exact file names.
+We remember intent and meaning, not file paths.
+
+Flamki Vector Search solves this as a local-first multimodal retrieval system powered by Actian VectorAI DB.
+It indexes local files, builds vectors for text and images, transcribes audio into searchable text, and combines lexical and semantic ranking through hybrid fusion.
+So users can search by meaning with practical filters.
+
+Now we run a real-use-case walkthrough.
+Imagine a hackathon participant who has less than ten minutes to submit.
+They need three things fast.
+First, the exact planning document.
+Second, the right demo photos.
+Third, key points from old voice notes.
+
+Step one is system proof.
+We check health and index status live.
+This confirms the stack is running now, not mocked.
+We also show scale.
+The index includes thousands of local files and a large number of vectors, which means retrieval quality is tested under realistic conditions.
+This is important for judging because toy datasets can hide weakness.
+
+Step two is document retrieval.
+We query for hackathon battle plan content.
+Notice we do not search by exact filename.
+We search by meaning.
+The system returns relevant PDF results with snippets, stream metadata, and confidence scores.
+This demonstrates practical semantic retrieval for long-form documents.
+
+Step three is photo retrieval by meaning.
+Now we query with natural language for a person photo.
+Again, no manual tagging is required.
+Results include image files surfaced through vector-based relevance.
+For users with hundreds or thousands of photos, this is where value becomes immediate.
+
+Step four is voice-note retrieval.
+Voice notes are usually impossible to search later.
+Here, we query transcript content directly and retrieve matching audio files.
+This turns spoken, unstructured content into indexed knowledge.
+In real workflows, this prevents losing ideas captured in quick voice memos.
+
+Step five is image-to-image similarity search.
+We upload one local sample image and run a visual similarity query.
+The system returns top similar images from the indexed collection.
+This is a strong multimodal proof point because it goes beyond text-only retrieval.
+
+Now the technical proof summary.
+This solution runs on the organizer-confirmed Actian VectorAI DB image.
+It uses named vectors for text and image modalities.
+It implements hybrid fusion with lexical and semantic signals.
+It supports filtered search with practical constraints.
+And it exposes production-style endpoints for health, status, text search, and image search.
+Everything shown here is live and reproducible.
+
+The product outcome is clear.
+Flamki Vector Search reduces retrieval time, improves confidence under deadlines, and makes local knowledge actually usable.
+Users get one unified search experience across docs, photos, and voice notes without moving data to the cloud.
+
+That is why this is not just a hackathon prototype.
+It is a practical second-brain retrieval solution built for real workflows.

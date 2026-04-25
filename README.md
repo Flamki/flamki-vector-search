@@ -1,95 +1,186 @@
-﻿# Flamki Vector Search
+# Flamki Vector Search
 
-Flamki Vector Search is a local-first multimodal search system built on **Actian VectorAI DB** for hackathon submission. It indexes documents, notes, images, and voice/audio files and serves hybrid retrieval through FastAPI + React PWA.
+**A local-first, multimodal semantic search system powered by [Actian VectorAI DB](https://www.actian.com/vectorai/).**
 
-## Judge criteria coverage
+Flamki Vector Search turns scattered local files — documents, photos, and voice memos — into searchable knowledge by meaning, not filenames.
 
-- **Actian VectorAI DB image**: `williamimoh/actian-vectorai-db:latest` (organizer-confirmed)
-- **Named vectors**: separate collections for text and image vectors
-- **Hybrid fusion (RRF)**: lexical + semantic merged in `Stage_3/tools/tool_hybrid_search.py`
-- **Filtered search**: `file_type`, `after_date`
+---
 
-## What is shipped
+## 🎯 Problem
 
-- VectorAI client module with collection lifecycle + upsert/search
-- FastAPI endpoints:
-  - `GET /health`
-  - `GET /api/index/status`
-  - `GET /api/search`
-  - `POST /api/search/image`
-- React PWA with:
-  - offline badge
-  - search bar
-  - filter chips
-  - result grid
-- Docker stack:
-  - `vectorai-db` on `50051`
-  - `api` on `8000`
-  - `pwa` on `5173`
+Every day we create dozens of files: PDFs, screenshots, photos, voice notes. Within weeks, they become digital clutter. When we urgently need something, **keyword search fails** because we don't remember exact file names — we remember *meaning* and *context*. Photos have no useful keywords. Voice notes are unsearchable. Our most valuable information becomes invisible.
 
-## Latest verified run (April 19, 2026)
+## 💡 Solution
 
-- `files_total=2781`
-- Modalities:
-  - `text=1045`
-  - `image=1600`
-  - `audio=80`
-  - `tabular=56`
-- VectorAI counts:
-  - `text_vectors=38374`
-  - `image_vectors=1923`
-- Endpoint checks: passing (`health`, `status`, text search, image search POST, audio query)
+Flamki Vector Search solves this with **semantic retrieval**:
 
-## Quick start
+- **Search by meaning** — query with natural language, not exact filenames
+- **Multimodal** — indexes text documents, images (CLIP embeddings), and audio (Whisper transcription)
+- **Hybrid fusion** — combines lexical + semantic ranking via Reciprocal Rank Fusion (RRF)
+- **Filtered search** — narrow by `file_type`, `after_date`, and more
+- **Local-first** — your files never leave your machine. No cloud dependency
+- **Offline-capable** — React PWA works without internet
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────┐     ┌──────────────┐     ┌──────────────────────┐
+│  React PWA  │────▶│   FastAPI     │────▶│  Actian VectorAI DB  │
+│  (port 5173)│     │  (port 8000)  │     │  (gRPC port 50051)   │
+└─────────────┘     └──────────────┘     └──────────────────────┘
+                         │
+              ┌──────────┼──────────┐
+              ▼          ▼          ▼
+         Text Embed  Image Embed  Audio Transcribe
+        (all-MiniLM) (CLIP ViT-L) (Whisper)
+```
+
+**Three Docker containers** run the full pipeline:
+
+| Service | Image | Port | Purpose |
+|---------|-------|------|---------|
+| `vectorai-db` | `williamimoh/actian-vectorai-db:latest` | 50051 | Vector storage + nearest-neighbor search |
+| `api` | Custom FastAPI | 8000 | Ingestion, embedding, search endpoints |
+| `pwa` | React + Vite | 5173 | Offline-capable search UI |
+
+---
+
+## ✅ Hackathon Judge Criteria
+
+| Requirement | Implementation |
+|-------------|---------------|
+| **Actian VectorAI DB** | `williamimoh/actian-vectorai-db:latest` (organizer-confirmed image) |
+| **Named vectors** | Separate collections: `text_vectors` (384-D) and `image_vectors_l14_768` (768-D) |
+| **Hybrid fusion (RRF)** | Lexical + semantic merged in `Stage_3/tools/tool_hybrid_search.py` |
+| **Filtered search** | `file_type`, `after_date` filters via VectorAI FilterBuilder |
+| **Live endpoints** | `/health`, `/api/index/status`, `/api/search`, `/api/search/image` |
+
+---
+
+## 📊 Verified Dataset Scale
+
+| Metric | Count |
+|--------|-------|
+| Total files indexed | **2,781** |
+| Text vectors | **38,374** |
+| Image vectors | **1,923** |
+| Text files | 1,045 |
+| Images | 1,600 |
+| Audio files | 80 |
+| Tabular files | 56 |
+
+---
+
+## 🚀 Quick Start
 
 ```bash
+# 1. Clone
+git clone https://github.com/Flamki/flamki-vector-search.git
+cd flamki-vector-search
+
+# 2. Start the stack
 docker compose up -d
-```
 
-- API docs: `http://localhost:8000/docs`
-- PWA: `http://localhost:5173`
-
-## Ingest large real local data
-
-1. Pull real files from your laptop folders into `demo_data/*`:
-
-```bash
-python scripts/collect_large_demo_data.py --docs 300 --notes 800 --photos 1600 --audio 80 --max-file-mb 80
-```
-
-2. Run ingestion:
-
-```bash
-docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=10800 api python /app/scripts/run_demo_ingest.py
-```
-
-3. If semantic vectors need a fresh mirror, rerun embed tasks only:
-
-```bash
-docker compose exec -e PYTHONPATH=/app -e INGEST_TIMEOUT_S=14400 -e RESET_TASKS=embed_text,embed_images api python /app/scripts/run_demo_ingest.py
-```
-
-## Endpoint smoke checks
-
-```bash
+# 3. Verify
 python scripts/check_endpoints.py
 ```
 
-## Demo recording guides
+- **PWA**: http://localhost:5173
+- **API docs**: http://localhost:8000/docs
+- **Health**: http://localhost:8000/health
 
-- Main script + timing: `DEMO_VIDEO_READY.md`
-- Teleprompter text: `DEMO_TELEPROMPTER.txt`
-- One-command preflight: `scripts/demo_preflight.ps1`
-- One-command 4-minute recording: `scripts/demo_take_4min.ps1`
-- ElevenLabs voiceover generator: `scripts/generate_elevenlabs_voiceover.py`
-- Auto demo render with voiceover: `scripts/render_demo_with_voiceover.ps1`
-- Full technical handoff: `PROJECT_HANDOFF_REPORT.md`
+---
 
-## Notes
+## 🔍 API Endpoints
 
-- OCR task is pending in Linux containers because OCR service in this codebase is Windows-only.
-- `demo_data/**` is ignored in git by design (privacy-safe public repo publishing).
+### `GET /health`
+Returns system health status.
 
-## License
+### `GET /api/index/status`
+Returns indexed file counts, vector counts, and task progress.
 
-Hackathon implementation with third-party dependencies under their respective licenses.
+### `GET /api/search?q=<query>&top_k=5&file_type=pdf`
+Hybrid text search with optional filters.
+
+**Example:**
+```bash
+curl "http://localhost:8000/api/search?q=hackathon%20battle%20plan&file_type=pdf&top_k=5"
+```
+
+### `POST /api/search/image?top_k=5`
+Image-to-image similarity search. Upload an image file to find visually similar indexed images.
+
+**Example:**
+```bash
+curl -X POST "http://localhost:8000/api/search/image?top_k=5" -F "file=@photo.png"
+```
+
+---
+
+## 📂 Project Structure
+
+```
+├── api/                    # FastAPI search & index endpoints
+├── vectorai/               # Actian VectorAI DB client wrapper
+│   ├── client.py           # VectorStore: upsert, search, stats
+│   └── hybrid.py           # RRF fusion logic
+├── Stage_2/                # Ingestion pipeline (tasks, embeddings)
+├── Stage_3/tools/          # Hybrid search tool with RRF
+├── frontend/pwa/           # React PWA (offline-capable)
+├── scripts/
+│   ├── check_endpoints.py          # Endpoint smoke tests
+│   ├── collect_large_demo_data.py  # Real data collector
+│   ├── run_demo_ingest.py          # Batch ingestion runner
+│   ├── demo_showcase/index.html    # Auto-advancing demo page
+│   └── render_final_submission.ps1 # One-command video render
+├── docker-compose.yml      # Full stack definition
+├── Dockerfile.api          # API container build
+└── requirements.txt        # Python dependencies
+```
+
+---
+
+## 🎬 Demo Video
+
+The demo video showcases:
+
+1. **Problem statement** (0:00–0:30) — why keyword search fails for real workflows
+2. **Solution + architecture** — Docker stack with Actian VectorAI DB
+3. **Data scale proof** — 2,781 files, 38K+ vectors indexed
+4. **Text search** — semantic document retrieval with hybrid fusion
+5. **Photo search** — natural language image retrieval via CLIP
+6. **Audio search** — voice note transcript retrieval
+7. **Image-to-image** — visual similarity search
+8. **Technical proof** — all judge criteria satisfied
+
+---
+
+## 🔧 Data Ingestion
+
+```bash
+# Collect real files from local machine
+python scripts/collect_large_demo_data.py \
+  --docs 300 --notes 800 --photos 1600 --audio 80
+
+# Run ingestion pipeline
+docker compose exec \
+  -e PYTHONPATH=/app \
+  -e INGEST_TIMEOUT_S=10800 \
+  api python /app/scripts/run_demo_ingest.py
+```
+
+---
+
+## ⚠️ Known Limitations
+
+- OCR task pending in Linux containers (OCR service is Windows-native in this codebase)
+- Some tabular/audio files fail parsing due to source format; core demo paths remain healthy
+- `demo_data/` is git-ignored to protect personal file privacy
+
+---
+
+## 📄 License
+
+Hackathon implementation. Third-party dependencies under their respective licenses.

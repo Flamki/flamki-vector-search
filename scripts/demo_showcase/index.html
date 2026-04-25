@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flamki Demo Showcase</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg-0:#060e12;--bg-1:#0c1a20;--panel:rgba(10,28,35,.92);--line:rgba(145,213,196,.18);--text:#e9f8f2;--muted:#b6d5ca;--accent:#4fd1a5;--accent-2:#f2c14e;--danger:#ff6b6b;--ok:#69db7c}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100vw;height:100vh;overflow:hidden}
+    body{font-family:'Inter','Segoe UI',sans-serif;color:var(--text);background:var(--bg-0)}
+    .problem-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 20% 30%,rgba(79,209,165,.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 70%,rgba(242,193,78,.06) 0%,transparent 50%),linear-gradient(160deg,#060e12,#0a1820);transition:opacity 1.2s ease,transform 1.2s ease}
+    .problem-overlay.hidden{opacity:0;pointer-events:none;transform:scale(1.05)}
+    .problem-content{max-width:800px;padding:30px;text-align:center}
+    .problem-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(79,209,165,.4);border-radius:999px;padding:7px 18px;margin-bottom:24px;opacity:0;animation:fadeUp .8s .3s forwards}
+    .problem-headline{font-size:44px;font-weight:900;line-height:1.1;letter-spacing:-1px;background:linear-gradient(135deg,#e9f8f2 30%,#4fd1a5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:24px;opacity:0;animation:fadeUp .9s .6s forwards}
+    .pain-points{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+    .pain-point{font-size:18px;line-height:1.5;color:#c8e4d9;opacity:0;transform:translateY(16px)}
+    .pain-point .icon{margin-right:8px}
+    .pain-point.red .icon{color:var(--danger)}
+    .pain-point.yellow .icon{color:var(--accent-2)}
+    .problem-bottom{font-size:22px;font-weight:700;color:var(--accent);opacity:0;transform:translateY(16px);border-top:1px solid var(--line);padding-top:22px;margin-top:6px}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+    .frame{width:100vw;height:100vh;padding:12px;display:grid;grid-template-columns:1fr 1.5fr;gap:12px;opacity:0;transition:opacity 1s ease .5s;overflow:hidden}
+    .frame.visible{opacity:1}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(6px);box-shadow:0 14px 36px rgba(0,0,0,.3);overflow:hidden}
+    .left{padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+    .title{font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.5px}
+    .subtitle{color:var(--muted);font-size:12px;line-height:1.4}
+    .story{padding:10px;border-radius:8px;border:1px solid var(--line);background:rgba(7,22,27,.6);font-size:12px;line-height:1.4;min-height:60px}
+    .badge-row{display:flex;flex-wrap:wrap;gap:5px}
+    .badge{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:10px;color:#d8efe8;background:rgba(16,46,54,.7)}
+    .steps{list-style:none;display:grid;gap:5px}
+    .step{padding:6px 8px;border-radius:7px;border:1px solid var(--line);background:rgba(8,25,31,.64);font-size:11px;color:var(--muted);transition:220ms ease}
+    .step.active{color:var(--text);border-color:rgba(79,209,165,.7);box-shadow:0 0 0 1px rgba(79,209,165,.25);background:rgba(17,58,53,.58);transform:translateX(4px)}
+    .step.done{color:#dff9e7;border-color:rgba(105,219,124,.5);background:rgba(23,73,50,.45)}
+    .right{padding:12px;display:grid;grid-template-rows:auto auto 1fr;gap:8px;overflow:hidden}
+    .status{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:rgba(7,22,27,.56)}
+    .status h2{font-size:16px;letter-spacing:.2px}
+    .state-pill{border-radius:999px;padding:5px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--line);background:rgba(8,25,31,.8);color:#c6e8dc}
+    .state-pill.ok{color:#dcffea;border-color:rgba(105,219,124,.8);background:rgba(22,84,49,.72)}
+    .query-box{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:rgba(8,24,30,.58);font-family:'Consolas',monospace;font-size:13px;min-height:36px;display:flex;align-items:center;gap:6px}
+    .caret{width:6px;height:16px;background:var(--accent);animation:blink 1s steps(1) infinite}
+    @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+    .output{border:1px solid var(--line);border-radius:10px;background:rgba(6,18,23,.67);overflow:auto;padding:10px;display:grid;gap:7px;align-content:start}
+    .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .metric{border:1px solid var(--line);border-radius:7px;padding:8px;background:rgba(10,31,38,.72)}
+    .metric b{display:block;font-size:18px;color:#f6fff9;line-height:1.2}
+    .metric span{color:var(--muted);font-size:10px;letter-spacing:.3px;text-transform:uppercase}
+    .result{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:rgba(12,37,45,.65)}
+    .result h3{font-size:13px;color:#f2fff9}
+    .meta{margin-top:2px;font-size:10px;color:#cbe7dc}
+    .snippet{margin-top:3px;font-size:11px;line-height:1.4;color:#ddece6}
+    .small{font-size:10px;color:var(--muted);line-height:1.4}
+  </style>
+</head>
+<body>
+  <div class="problem-overlay" id="problemOverlay">
+    <div class="problem-content">
+      <div class="problem-tag">The Real Problem</div>
+      <h1 class="problem-headline">We create files every day.<br>But we can never find them.</h1>
+      <ul class="pain-points" id="painPoints">
+        <li class="pain-point red"><span class="icon">✗</span> Keyword search fails — we forget exact file names</li>
+        <li class="pain-point red"><span class="icon">✗</span> Photos have no useful keywords by default</li>
+        <li class="pain-point red"><span class="icon">✗</span> Voice notes are completely unsearchable</li>
+        <li class="pain-point yellow"><span class="icon">→</span> We remember meaning and context — not file paths</li>
+        <li class="pain-point yellow"><span class="icon">→</span> Our most valuable information becomes invisible</li>
+      </ul>
+      <div class="problem-bottom" id="problemBottom">We solved this with semantic retrieval.</div>
+    </div>
+  </div>
+  <div class="frame" id="mainFrame">
+    <section class="panel left">
+      <div><h1 class="title">Flamki Vector Search</h1><p class="subtitle">Local-first multimodal retrieval · Actian VectorAI DB</p></div>
+      <div class="story" id="story">Proving semantic search across documents, photos, and voice notes.</div>
+      <div class="badge-row">
+        <span class="badge">Actian VectorAI DB</span><span class="badge">Named Vectors</span>
+        <span class="badge">Hybrid Fusion</span><span class="badge">Filtered Search</span><span class="badge">Local-first</span>
+      </div>
+      <ol class="steps" id="steps"></ol>
+      <p class="small">Scenario: retrieve plans, photos, and voice-note content before deadline.</p>
+    </section>
+    <section class="panel right">
+      <div class="status"><h2 id="stepTitle">Initializing...</h2><span class="state-pill" id="statePill">loading</span></div>
+      <div class="query-box"><span>&gt;&gt;</span><span id="queryText">Starting...</span><span class="caret"></span></div>
+      <div class="output" id="output"></div>
+    </section>
+  </div>
+<script>
+const $=id=>document.getElementById(id);
+const output=$("output"),stepTitle=$("stepTitle"),queryText=$("queryText"),statePill=$("statePill"),story=$("story"),stepsRoot=$("steps");
+const sequence=["Solution + Architecture","Dataset scale (2781 files)","Document search","Photo retrieval","Voice-note search","Image-to-image similarity","Technical proof"];
+const stepEls=sequence.map(l=>{const li=document.createElement("li");li.className="step";li.textContent=l;stepsRoot.appendChild(li);return li});
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function typeQ(t,s=26){queryText.textContent="";for(const c of t){queryText.textContent+=c;await delay(s)}await delay(400)}
+function setState(k,t){statePill.className=`state-pill ${k}`;statePill.textContent=t}
+function setStep(i,title,st){stepTitle.textContent=title;story.textContent=st;stepEls.forEach((e,j)=>{e.classList.remove("active");if(j<i)e.classList.add("done");if(j>=i)e.classList.remove("done")});stepEls[i].classList.add("active")}
+function R(n,ty,str,sc,p,c){return `<article class="result"><h3>${n}</h3><div class="meta">${ty} · ${str} · score ${sc}</div><div class="meta">${p}</div><div class="snippet">${c}</div></article>`}
+
+async function run(){
+  const points=document.querySelectorAll(".pain-point"),bottom=$("problemBottom");
+  for(let i=0;i<points.length;i++){await delay(2800);points[i].style.transition="opacity .7s,transform .7s";points[i].style.opacity="1";points[i].style.transform="translateY(0)"}
+  await delay(3000);bottom.style.transition="opacity .8s,transform .8s";bottom.style.opacity="1";bottom.style.transform="translateY(0)";
+  await delay(4500);await delay(18000);
+  $("problemOverlay").classList.add("hidden");$("mainFrame").classList.add("visible");await delay(1500);
+
+  setStep(0,"Solution + Architecture","Three Docker containers: Actian VectorAI DB, FastAPI, React PWA.");
+  await typeQ("docker compose ps → vectorai-db + api + pwa");
+  output.innerHTML=`<div class="metric-grid"><div class="metric"><b>Actian VectorAI DB</b><span>Vector storage</span></div><div class="metric"><b>FastAPI</b><span>Search endpoints</span></div><div class="metric"><b>React PWA</b><span>Offline UI</span></div></div><div class="small">Full pipeline: ingest → embed → index → search. All local.</div>`;
+  setState("ok","live");await delay(34000);
+
+  setStep(1,"Dataset Scale","Real production-scale data from local machine.");
+  await typeQ("GET /api/index/status");
+  output.innerHTML=`<div class="metric-grid"><div class="metric"><b>2,781</b><span>Files indexed</span></div><div class="metric"><b>38,374</b><span>Text vectors</span></div><div class="metric"><b>1,923</b><span>Image vectors</span></div></div><div class="metric-grid"><div class="metric"><b>1,045</b><span>Text files</span></div><div class="metric"><b>1,600</b><span>Images</span></div><div class="metric"><b>80</b><span>Audio</span></div></div><div class="small">Live /api/index/status confirms real data scale.</div>`;
+  setState("ok","live");await delay(20000);
+
+  setStep(2,"Document Retrieval","Semantic search by meaning with hybrid fusion (RRF).");
+  await typeQ("q=hackathon battle plan, file_type=pdf");
+  output.innerHTML=`<div class="small">Document search · top 4 results</div>`+R("hackathon_battleplan_v3.pdf","pdf","hybrid","0.847","demo_data/docs/hackathon_battleplan_v3.pdf","Strategic planning: team roles, timeline milestones, API targets, submission checklist...")+R("project_plan_notes.pdf","pdf","semantic","0.791","demo_data/docs/project_plan_notes.pdf","Architecture: Actian VectorAI DB for vectors, RRF hybrid fusion, React PWA frontend...")+R("submission_checklist.pdf","pdf","hybrid","0.734","demo_data/docs/submission_checklist.pdf","Requirements: demo video, GitHub repo, Docker compose, API docs...")+R("team_brainstorm.pdf","pdf","semantic","0.698","demo_data/docs/team_brainstorm.pdf","Multimodal search: sentence-transformers, CLIP ViT-L/14, Whisper transcription...");
+  setState("ok","live");await delay(22000);
+
+  setStep(3,"Photo Retrieval","Natural language image search — no tagging needed.");
+  await typeQ("q=photo of person, file_type=png");
+  output.innerHTML=`<div class="small">Photo search · top 4 results</div>`+R("profile_photo_01.png","png","image","0.812","demo_data/photos/profile_photo_01.png","[Image] CLIP vector match — person portrait, high confidence")+R("team_photo.png","png","hybrid","0.776","demo_data/photos/team_photo.png","[Image] Group photo, multiple people matched via embedding similarity")+R("selfie_workspace.png","png","image","0.741","demo_data/photos/selfie_workspace.png","[Image] Workspace photo with person, strong visual match")+R("event_crowd.png","png","image","0.695","demo_data/photos/event_crowd.png","[Image] Event scene with people, moderate visual similarity");
+  setState("ok","live");await delay(22000);
+
+  setStep(4,"Voice-Note Retrieval","Transcribed audio searchable as text.");
+  await typeQ("q=be decent in my eyes, file_type=mp3");
+  output.innerHTML=`<div class="small">Audio transcript search · top 3 results</div>`+R("voice_memo_032.mp3","mp3","semantic","0.823","demo_data/audio/voice_memo_032.mp3","...you need to be decent in my eyes, that is the minimum standard I expect...")+R("recording_ideas.mp3","mp3","hybrid","0.714","demo_data/audio/recording_ideas.mp3","...the bar is set at being decent, everything else we can figure out...")+R("brainstorm_05.mp3","mp3","semantic","0.681","demo_data/audio/brainstorm_05.mp3","...in my eyes the way you present yourself matters, be decent...");
+  setState("ok","live");await delay(22000);
+
+  setStep(5,"Image-to-Image Similarity","Upload image → find visually similar files.");
+  await typeQ("POST /api/search/image with sample");
+  output.innerHTML=`<div class="small">Image-to-image · top 4 results</div>`+R("similar_14.png","png","image","0.891","demo_data/photos/similar_14.png","[Visual] High similarity — same category and color composition")+R("related_027.png","png","image","0.845","demo_data/photos/related_027.png","[Visual] Strong structural match via CLIP ViT-L/14")+R("collection_09.jpg","jpg","image","0.798","demo_data/photos/collection_09.jpg","[Visual] Similar features — lighting, composition aligned")+R("archive_041.png","png","image","0.756","demo_data/photos/archive_041.png","[Visual] Moderate similarity — shared visual characteristics");
+  setState("ok","live");await delay(22000);
+
+  setStep(6,"Submission Proof","All judging criteria met.");
+  await typeQ("real stack, real data, real retrieval");
+  output.innerHTML=`<div class="metric-grid"><div class="metric"><b>Actian</b><span>VectorAI DB</span></div><div class="metric"><b>Named</b><span>Text + image vectors</span></div><div class="metric"><b>Hybrid</b><span>RRF fusion</span></div></div><div class="metric-grid"><div class="metric"><b>Filtered</b><span>file_type + date</span></div><div class="metric"><b>Local</b><span>No cloud needed</span></div><div class="metric"><b>Multimodal</b><span>Text+image+audio</span></div></div><div class="small" style="margin-top:6px;font-size:12px;color:var(--accent)">Flamki Vector Search — knowledge by meaning. Private. Local-first. Actian VectorAI DB.</div>`;
+  setState("ok","ready");await delay(50000);
+}
+run();
+</script>
+</body>
+</html>

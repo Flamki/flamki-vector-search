@@ -1,0 +1,61 @@
+Every day, we create dozens of files.
+Documents. Screenshots. Photos. Voice memos.
+Within weeks, they become digital clutter.
+And when we urgently need something, keyword search fails.
+Because we do not remember exact file names.
+We remember what it was about.
+We remember meaning.
+We remember context.
+A photo has no useful keywords by default.
+A voice note cannot be searched at all.
+So even our most valuable information becomes invisible.
+That is the problem we solved.
+
+We built Flamki Vector Search, a local-first multimodal search system powered by Actian VectorAI DB.
+It indexes documents, images, and voice transcripts, then fuses lexical and semantic retrieval.
+Three Docker containers run the full pipeline: Actian VectorAI DB, FastAPI, and a React PWA.
+Your files stay on your machine. No cloud dependency.
+
+This is not toy data.
+We indexed over twenty-seven hundred real files from this local machine.
+The system holds thirty-eight thousand text vectors and nearly two thousand image vectors.
+Production-scale data proves real retrieval quality.
+
+Now, semantic document retrieval.
+I search for hackathon battle plan.
+Notice, I am not searching by filename.
+I am searching by meaning.
+The system combines lexical relevance and vector similarity through hybrid fusion with Reciprocal Rank Fusion.
+I can also filter by file type.
+Results show relevant documents with confidence scores and content snippets.
+This is practical, robust retrieval.
+
+Next, photo retrieval by natural language.
+I query for a person photo.
+No manual tagging is required.
+The system returns relevant image files through vector-based similarity.
+For users with hundreds or thousands of photos, this is where real-world value becomes immediate.
+Photos are usually the hardest files to organize, and semantic search solves that.
+
+Now audio search.
+Voice notes are transcribed during ingestion and embedded as vectors.
+I query transcript content and retrieve matching audio files.
+This closes a critical gap.
+Many people record ideas as voice memos, then never find them again.
+With this pipeline, spoken content becomes discoverable knowledge.
+
+Image-to-image similarity.
+I upload one local image and the system returns visually similar files from the indexed collection.
+This demonstrates true multimodal capability beyond text-only search.
+Dedicated image vectors ensure high-confidence visual matches.
+
+Our solution satisfies all core judging criteria.
+We use the organizer-confirmed Actian VectorAI DB image.
+Named vectors for text and image collections.
+Hybrid fusion with Reciprocal Rank Fusion.
+Filtered search with practical constraints.
+And live, production-style API endpoints.
+
+Flamki Vector Search turns scattered local files into searchable knowledge by meaning.
+It is private, local-first, and fully powered by Actian VectorAI DB.
+Thank you.
